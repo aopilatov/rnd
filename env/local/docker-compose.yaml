@@ -1,0 +1,23 @@
+version: '3.9'
+name: rnd
+
+services: 
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    container_name: rnd_postgres
+    volumes:
+       - ./db-data:/data/postgres
+    ports:
+      - 0.0.0.0:5432:5432
+    env_file:
+      - local.env
+  
+  redis:
+    image: redis:7.0
+    restart: unless-stopped
+    container_name: rnd_redis
+    volumes:
+       - ./redis-data:/data
+    ports:
+      - 0.0.0.0:6379:6379

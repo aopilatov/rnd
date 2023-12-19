@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      imagePullSecrets:
+      - name: ghrc-auth
+      containers:
+      - name: app
+        image: ghcr.io/aopilatov/rnd_app:amd64-1.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          valueFrom:
+           configMapKeyRef:
+            name: main-configmap
+            key: app-env
+        - name: APP_URL
+          valueFrom:
+           configMapKeyRef:
+            name: main-configmap
+            key: app-url
+        - name: POSTGRES_HOST
+          valueFrom:
+           configMapKeyRef:
+            name: postgres-configmap
+            key: postgres-host
+        - name: POSTGRES_PORT
+          valueFrom:
+           configMapKeyRef:
+            name: postgres-configmap
+            key: postgres-port
+        - name: POSTGRES_DB
+          valueFrom:
+           configMapKeyRef:
+            name: postgres-configmap
+            key: postgres-dbname   
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-password
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: redis-configmap
+              key: redis-host
+        - name: TELEGRAM_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: telegram-secret
+              key: token
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: app
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000

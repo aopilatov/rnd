@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ghrc-auth
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJnaGNyLmlvIjp7ImF1dGgiOiJZVzl3YVd4aGRHOTJPbWRvY0Y5a1lraFdVbUZpWVhOaU1YQXpOamN4VFhSelp6bENZbXhqZVZOWmJEQTBXV3QzYVhVPSJ9fX0=
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 37.27.8.214-37.27.8.214
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-configmap
+data:
+  app-env: dev
+  app-url: https://aop.email
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configmap
+data:
+  postgres-host: postgres-service
+  postgres-dbname: dev
+  postgres-port: "5432"
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-configmap
+data:
+  redis-host: redis-service
