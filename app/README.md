@@ -34,31 +34,3 @@ pnpm run migrate
 ```bash
 pnpm run start:dev
 ```
-
-## Kubernetes
-
-### Requirements
-- Kubernetes cluster
-- Installed load balancer controller
-
-```bash
-kubectl apply -f ./config.yaml
-kubectl apply -f ./secret.yaml
-kubectl apply -f ./volume.yaml
-kubectl apply -f ./redis.yaml
-kubectl apply -f ./postgres.yaml
-```
-
-If your server uses ARM-based architecture:
-```bash
-kubectl apply -f ./app-arm.yaml
-```
-Otherwise:
-```bash
-kubectl apply -f ./app-amd64.yaml
-```
-
-And the final
-```bash
-kubectl apply -f ./ingress.yaml
-```
